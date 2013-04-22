@@ -86,3 +86,13 @@ fi
 
 # drop the init scripts into $BUILD_DIR
 cp -r $OONIB_PATH/scripts/init $BUILD_DIR
+cp -r $OONIB_PATH $BUILD_DIR/
+
+# NOTE: keep only: bin lib init $OONIB_GIT_REPO
+rm -rf $BUILD_DIR/include
+rm -rf $BUILD_DIR/libevent-*
+rm -rf $BUILD_DIR/tor*
+rm -rf $BUILD_DIR/openssl-*
+rm -rf $BUILD_DIR/zlib-*
+rm -rf $BUILD_DIR/build
+

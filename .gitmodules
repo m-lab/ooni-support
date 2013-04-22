@@ -1,0 +1,9 @@
+[submodule "package"]
+	path = package
+	url = https://github.com/m-lab-tools/package.git
+[submodule "ooni-backend"]
+	path = ooni-backend
+	url = https://github.com/TheTorProject/ooni-backend.git
+[submodule "virtualenv"]
+	path = virtualenv
+	url = https://github.com/pypa/virtualenv.git

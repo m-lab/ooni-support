@@ -43,15 +43,7 @@ fi
 
 
 OONIB_GIT_REPO=ooni-backend
-#OONIB_GIT_URL="https://github.com/TheTorProject/$OONIB_GIT_REPO.git"
-#OONIB_GIT_TAG=master
-#OONIB_GIT_REPO=oonib
-#OONIB_GIT_URL="https://github.com/TheTorProject/$OONIB_GIT_REPO.git"
-#OONIB_GIT_TAG=0.0.10
-
 VIRTUALENV_GIT_REPO=virtualenv
-#VIRTUALENV_GIT_URL="https://github.com/pypa/$VIRTUALENV_GIT_REPO.git"
-#VIRTUALENV_GIT_TAG=1.9rc2
 
 echo Installing build tools
 sudo yum groupinstall -y Development\ Tools
@@ -65,34 +57,8 @@ sudo yum install -y glibc-static
 echo Installing python-devel
 sudo yum install -y python-devel
 
-SLICE_NAME=mlab_ooni
-# Run relative to where the script was called
-SCRIPT_ROOT=$SOURCE_DIR
-# Run relative to our slice path
-DEPLOY_PATH=$BUILD_DIR/oonib-deploy.`date +%s`.tar.gz
-
-#echo Downloading $OONIB_GIT_REPO $OONIB_GIT_TAG
-OONIB_PATH=$SCRIPT_ROOT/$OONIB_GIT_REPO
-# does the repository already exist? If not, fetch it
-#if [ ! -e $OONIB_PATH ] ; then
-#  echo Fetching the $OONIB_GIT_REPO repository
-#  git clone $OONIB_GIT_URL $OONIB_PATH
-#fi
-#pushd $OONIB_PATH
-#    git fetch origin
-#    git checkout $OONIB_GIT_TAG
-#XXX: git-verify-tag $OONIB_GIT_TAG
-
-# Get a copy of virtualenv
-    #echo Downloading $VIRTUALENV_GIT_REPO $VIRTUALENV_GIT_TAG
-VIRTUALENV_PATH=$SCRIPT_ROOT/$VIRTUALENV_GIT_REPO
-    #if [ ! -e $VIRTUALENV_PATH ] ; then
-    #    git clone $VIRTUALENV_GIT_URL $VIRTUALENV_PATH
-    #fi
-    #cd $VIRTUALENV_PATH
-    #    git fetch origin
-    #    git checkout $VIRTUALENV_GIT_TAG
-#XXX: git verify-tag $VIRTUALENV_GIT_TAG
+OONIB_PATH=$SOURCE_DIR/$OONIB_GIT_REPO
+VIRTUALENV_PATH=$SOURCE_DIR/$VIRTUALENV_GIT_REPO
   
 # See warning. Remove python and redeploy virtualenv with current python
 PYTHON_EXE=$BUILD_DIR/bin/python
@@ -118,7 +84,5 @@ if [ -e $BUILD_DIR/tor ]; then
   cp $BUILD_DIR/tor $BUILD_DIR/bin/
 fi
 
-# drop the init scripts into $SCRIPT_ROOT
-cp -r $OONIB_GIT_REPO/scripts/init $SCRIPT_ROOT
-# or just tar up the entire cwd and call it done, son.
-#tar -C $SCRIPT_ROOT -czf $DEPLOY_PATH bin lib init $OONIB_GIT_REPO
+# drop the init scripts into $BUILD_DIR
+cp -r $OONIB_PATH/scripts/init $BUILD_DIR

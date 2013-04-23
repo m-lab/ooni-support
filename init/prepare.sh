@@ -86,7 +86,7 @@ fi
 
 # drop the init scripts into $BUILD_DIR
 cp -r $OONIB_PATH/scripts/init $BUILD_DIR
-cp -r $OONIB_PATH $BUILD_DIR/
+rsync -ar --exclude .git $OONIB_PATH $BUILD_DIR/
 cp -r $SOURCE_DIR/init/initialize.sh $BUILD_DIR/init
 cp -r $SOURCE_DIR/init/stop.sh $BUILD_DIR/init
 

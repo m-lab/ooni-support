@@ -88,6 +88,7 @@ fi
 cp -r $OONIB_PATH/scripts/init $BUILD_DIR
 cp -r $OONIB_PATH $BUILD_DIR/
 cp -r $SOURCE_DIR/init/initialize.sh $BUILD_DIR/init
+cp -r $SOURCE_DIR/init/stop.sh $BUILD_DIR/init
 
 # NOTE: keep only: bin lib init $OONIB_GIT_REPO
 rm -rf $BUILD_DIR/include

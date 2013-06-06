@@ -13,15 +13,15 @@ cd $SCRIPT_ROOT
 #XXX: we should think about setting these fields more carefully
 OPENSSL_SUBJECT="/C=US/ST=CA/CN="`hostname`
 OPENSSL_PASS=file:$SCRIPT_ROOT/cert.pass
-dd if=/dev/random of=$SCRIPT_ROOT/cert.pass bs=32 count=1
-openssl genrsa -des3 -passout $OPENSSL_PASS -out private.key 4096
-openssl req -new -passin $OPENSSL_PASS -key private.key -out server.csr -subj $OPENSSL_SUBJECT
-cp private.key private.key.org
+sudo -u $SLICEHOME dd if=/dev/random of=$SCRIPT_ROOT/cert.pass bs=32 count=1
+sudo -u $SLICEHOME openssl genrsa -des3 -passout $OPENSSL_PASS -out private.key 4096
+sudo -u $SLICEHOME openssl req -new -passin $OPENSSL_PASS -key private.key -out server.csr -subj $OPENSSL_SUBJECT
+sudo -u $SLICEHOME cp private.key private.key.org
 
 # Remove passphrase from key
-openssl rsa -passin file:$SCRIPT_ROOT/cert.pass -in private.key.org -out private.key
-chmod 600 private.key
-openssl x509 -req -days 365 -in server.csr -signkey private.key -out certificate.crt
+sudo -u $SLICEHOME openssl rsa -passin file:$SCRIPT_ROOT/cert.pass -in private.key.org -out private.key
+sudo -u $SLICEHOME chmod 600 private.key
+sudo -u $SLICEHOME openssl x509 -req -days 365 -in server.csr -signkey private.key -out certificate.crt
 rm private.key.org
 rm cert.pass
 
@@ -85,6 +85,7 @@ helpers:
         private_key: '"$SCRIPT_ROOT"/private.key'
         certificate: '"$SCRIPT_ROOT"/certificate.crt'
         port: 443" > $SCRIPT_ROOT/oonib.conf
+chown $SLICENAME:slices $SCRIPT_ROOT/oonib.conf
 
 # NOTE: enable hourly OONI log archiving
 cp $SLICEHOME/archive_reports.py /etc/cron.hourly/

@@ -8,5 +8,8 @@ else
     SLICEHOME=/home/mlab_ooni
 fi
 
+# NOTE: archive script reads config files from $PWD
+cd $SLICEHOME
+
 # TODO: add arguments for dirs in /var/spool/mlab_ooni
 $SLICEHOME/bin/archive_oonib_reports

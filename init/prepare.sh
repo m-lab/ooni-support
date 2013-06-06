@@ -85,11 +85,8 @@ if [ -e $BUILD_DIR/tor ]; then
 fi
 
 # drop the init scripts into $BUILD_DIR
-cp -r $OONIB_PATH/scripts/init $BUILD_DIR
+cp -r $SOURCE_DIR/init $BUILD_DIR
 rsync -ar --exclude .git $OONIB_PATH $BUILD_DIR/
-cp -r $SOURCE_DIR/init/initialize.sh $BUILD_DIR/init
-cp -r $SOURCE_DIR/init/start.sh $BUILD_DIR/init
-cp -r $SOURCE_DIR/init/stop.sh $BUILD_DIR/init
 
 # remove pre-compiled .py files
 find $BUILD_DIR -name "*.pyc" -a -exec rm -f {} \;

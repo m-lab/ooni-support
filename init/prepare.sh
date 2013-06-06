@@ -87,6 +87,7 @@ fi
 # drop the init scripts into $BUILD_DIR
 cp -r $SOURCE_DIR/init $BUILD_DIR
 rsync -ar --exclude .git $OONIB_PATH $BUILD_DIR/
+cp $OONIB_PATH/scripts/archive_reports.py $BUILD_DIR/
 
 # remove pre-compiled .py files
 find $BUILD_DIR -name "*.pyc" -a -exec rm -f {} \;

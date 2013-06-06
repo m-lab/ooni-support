@@ -84,3 +84,6 @@ helpers:
         private_key: '"$SCRIPT_ROOT"/private.key'
         certificate: '"$SCRIPT_ROOT"/certificate.crt'
         port: 443" > $SCRIPT_ROOT/oonib.conf
+
+# NOTE: enable hourly OONI log archiving
+cp $SLICEHOME/archive_reports.py /etc/cron.hourly/

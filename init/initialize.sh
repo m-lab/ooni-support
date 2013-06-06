@@ -5,6 +5,9 @@
 # system libraries? libyaml, anyone?
 source /etc/mlab/slice-functions
 
+set -e
+
+yum install -y PyYAML python-ipaddr
 
 # 2. Generate a ssl certificate
 SCRIPT_ROOT=`pwd`
@@ -13,15 +16,15 @@ cd $SCRIPT_ROOT
 #XXX: we should think about setting these fields more carefully
 OPENSSL_SUBJECT="/C=US/ST=CA/CN="`hostname`
 OPENSSL_PASS=file:$SCRIPT_ROOT/cert.pass
-sudo -u $SLICEHOME dd if=/dev/random of=$SCRIPT_ROOT/cert.pass bs=32 count=1
-sudo -u $SLICEHOME openssl genrsa -des3 -passout $OPENSSL_PASS -out private.key 4096
-sudo -u $SLICEHOME openssl req -new -passin $OPENSSL_PASS -key private.key -out server.csr -subj $OPENSSL_SUBJECT
-sudo -u $SLICEHOME cp private.key private.key.org
+sudo -u $SLICENAME dd if=/dev/random of=$SCRIPT_ROOT/cert.pass bs=32 count=1
+sudo -u $SLICENAME openssl genrsa -des3 -passout $OPENSSL_PASS -out private.key 4096
+sudo -u $SLICENAME openssl req -new -passin $OPENSSL_PASS -key private.key -out server.csr -subj $OPENSSL_SUBJECT
+sudo -u $SLICENAME cp private.key private.key.org
 
 # Remove passphrase from key
-sudo -u $SLICEHOME openssl rsa -passin file:$SCRIPT_ROOT/cert.pass -in private.key.org -out private.key
-sudo -u $SLICEHOME chmod 600 private.key
-sudo -u $SLICEHOME openssl x509 -req -days 365 -in server.csr -signkey private.key -out certificate.crt
+sudo -u $SLICENAME openssl rsa -passin file:$SCRIPT_ROOT/cert.pass -in private.key.org -out private.key
+sudo -u $SLICENAME chmod 600 private.key
+sudo -u $SLICENAME openssl x509 -req -days 365 -in server.csr -signkey private.key -out certificate.crt
 rm private.key.org
 rm cert.pass
 
@@ -88,4 +91,5 @@ helpers:
 chown $SLICENAME:slices $SCRIPT_ROOT/oonib.conf
 
 # NOTE: enable hourly OONI log archiving
-cp $SLICEHOME/archive_reports.py /etc/cron.hourly/
+cp $SLICEHOME/archive_oonib_reports.cron /etc/cron.hourly/
+chmod 755 /etc/cron.hourly/archive_oonib_reports.cron

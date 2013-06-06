@@ -58,6 +58,7 @@ main:
     euid: Null
     uid: $OONIB_UID
     gid: $OONIB_GID
+    socks_port: 9055
     uuid: Null
     no_save: true
     profile: Null

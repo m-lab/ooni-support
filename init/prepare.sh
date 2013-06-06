@@ -82,6 +82,9 @@ $OONIB_PATH/scripts/build_tor2web_tor.sh
 # add to bin
 if [ -e $BUILD_DIR/tor ]; then
   cp $BUILD_DIR/tor $BUILD_DIR/bin/
+else
+  echo "Error: missing tor binary"
+  exit 1
 fi
 
 # drop the init scripts into $BUILD_DIR

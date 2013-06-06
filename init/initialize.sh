@@ -56,8 +56,8 @@ main:
     rundir: .
     umask: Null
     euid: Null
-    uid: $OONIB_UID
-    gid: $OONIB_GID
+    uid: $OONIB_UID
+    gid: $OONIB_GID
     uuid: Null
     no_save: true
     profile: Null
@@ -65,7 +65,7 @@ main:
 
 helpers:
     http_return_request:
-        port: $HTTP_ECHO_PORT
+        port: $HTTP_ECHO_PORT
         server_version: Apache
 
     tcp_echo:
@@ -77,8 +77,8 @@ helpers:
         port: 57003
 
     dns:
-        udp_port: 57004
-        tcp_port: 57005
+        udp_port: 57004
+        tcp_port: 57005
 
     ssl:
         private_key: '"$SCRIPT_ROOT"/private.key'

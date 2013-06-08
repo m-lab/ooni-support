@@ -7,22 +7,22 @@ source /etc/mlab/slice-functions
 
 set -e
 
-yum install -y PyYAML python-ipaddr
+# TODO: remove this is nothing breaks. 
+#yum install -y PyYAML python-ipaddr
 
 # 2. Generate a ssl certificate
-SCRIPT_ROOT=`pwd`
-cd $SCRIPT_ROOT
+cd $SLICEHOME
 
 #XXX: we should think about setting these fields more carefully
 OPENSSL_SUBJECT="/C=US/ST=CA/CN="`hostname`
-OPENSSL_PASS=file:$SCRIPT_ROOT/cert.pass
-sudo -u $SLICENAME dd if=/dev/random of=$SCRIPT_ROOT/cert.pass bs=32 count=1
+OPENSSL_PASS=file:$SLICEHOME/cert.pass
+sudo -u $SLICENAME dd if=/dev/random of=$SLICEHOME/cert.pass bs=32 count=1
 sudo -u $SLICENAME openssl genrsa -des3 -passout $OPENSSL_PASS -out private.key 4096
 sudo -u $SLICENAME openssl req -new -passin $OPENSSL_PASS -key private.key -out server.csr -subj $OPENSSL_SUBJECT
 sudo -u $SLICENAME cp private.key private.key.org
 
 # Remove passphrase from key
-sudo -u $SLICENAME openssl rsa -passin file:$SCRIPT_ROOT/cert.pass -in private.key.org -out private.key
+sudo -u $SLICENAME openssl rsa -passin file:$SLICEHOME/cert.pass -in private.key.org -out private.key
 sudo -u $SLICENAME chmod 600 private.key
 sudo -u $SLICENAME openssl x509 -req -days 365 -in server.csr -signkey private.key -out certificate.crt
 rm private.key.org
@@ -43,16 +43,24 @@ else
   HTTP_ECHO_PORT=80
 fi
 
-# drop a config in $SCRIPT_ROOT
+# NOTE: create a directory for raw ooni reports before archiving.
+ARCHIVE_DIR=$SLICERSYNCDIR
+REPORT_DIR=/var/spool/raw_reports
+mkdir -p $REPORT_DIR
+chown $SLICENAME:slices $REPORT_DIR
+
+# drop a config in $SLICEHOME
 echo "
 main:
-    report_dir: '/var/spool/$SLICENAME'
+    report_dir: '$REPORT_DIR'
+    archive_dir: '$ARCHIVE_DIR'
     tor_datadir: 
-    database_uri: 'sqlite://"$SCRIPT_ROOT"/oonib_test_db.db'
+    logfile: '$SLICEHOME/oonib.log'
+    database_uri: 'sqlite://$SLICEHOME/oonib_test_db.db'
     db_threadpool_size: 10
-    tor_binary: '"$SCRIPT_ROOT"/bin/tor'
+    tor_binary: '$SLICEHOME/bin/tor'
     tor2webmode: true
-    pidfile: 'oonib.pid'
+    pidfile: '$SLICEHOME/oonib.pid'
     nodaemon: false
     originalname: Null
     chroot: Null
@@ -66,6 +74,7 @@ main:
     no_save: true
     profile: Null
     debug: Null
+    stale_time: 3600
 
 helpers:
     http_return_request:
@@ -85,10 +94,11 @@ helpers:
         tcp_port: 57005
 
     ssl:
-        private_key: '"$SCRIPT_ROOT"/private.key'
-        certificate: '"$SCRIPT_ROOT"/certificate.crt'
-        port: 443" > $SCRIPT_ROOT/oonib.conf
-chown $SLICENAME:slices $SCRIPT_ROOT/oonib.conf
+        private_key: '$SLICEHOME/private.key'
+        certificate: '$SLICEHOME/certificate.crt'
+        port: 443" > $SLICEHOME/oonib.conf
+
+chown $SLICENAME:slices $SLICEHOME/oonib.conf
 
 # NOTE: enable hourly OONI log archiving
 cp $SLICEHOME/archive_oonib_reports.cron /etc/cron.hourly/

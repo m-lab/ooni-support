@@ -99,7 +99,3 @@ helpers:
         port: 443" > $SLICEHOME/oonib.conf
 
 chown $SLICENAME:slices $SLICEHOME/oonib.conf
-
-# NOTE: enable hourly OONI log archiving
-cp $SLICEHOME/archive_oonib_reports.cron /etc/cron.hourly/
-chmod 755 /etc/cron.hourly/archive_oonib_reports.cron

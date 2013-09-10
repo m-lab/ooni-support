@@ -57,6 +57,9 @@ sudo yum install -y glibc-static
 echo Installing python-devel
 sudo yum install -y python-devel
 
+echo Installing sqlite-devel
+sudo yum install -y sqlite-devel
+
 OONIB_PATH=$SOURCE_DIR/$OONIB_GIT_REPO
 VIRTUALENV_PATH=$SOURCE_DIR/$VIRTUALENV_GIT_REPO
   

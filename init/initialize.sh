@@ -46,7 +46,16 @@ fi
 # NOTE: create a directory for raw ooni reports before archiving.
 ARCHIVE_DIR=$SLICERSYNCDIR
 REPORT_DIR=/var/spool/raw_reports
+DATA_DIR=$SLICEHOME/data
+TOR_DIR=$DATA_DIR/tor
+INPUT_DIR=$DATA_DIR/inputs
+DECK_DIR=$DATA_DIR/decks
+
 mkdir -p $REPORT_DIR
+mkdir -p $TOR_DIR
+mkdir -p $INPUT_DIR
+mkdir -p $DECK_DIR
+
 chown $SLICENAME:slices $REPORT_DIR
 
 # drop a config in $SLICEHOME
@@ -54,17 +63,26 @@ echo "
 main:
     report_dir: '$REPORT_DIR'
     archive_dir: '$ARCHIVE_DIR'
-    tor_datadir: 
-    logfile: '$SLICEHOME/oonib.log'
-    database_uri: 'sqlite://$SLICEHOME/oonib_test_db.db'
-    db_threadpool_size: 10
+    input_dir: '$INPUT_DIR'
+    deck_dir: '$DECK_DIR'
+
+    policy_file: '$DATA_DIR/policy.yaml'
+    bouncer_file: '$DATA_DIR/bouncer.yaml'
+
+    tor_datadir: '$TOR_DIR'
     tor_binary: '$SLICEHOME/bin/tor'
     tor2webmode: true
+    tor_hidden_service: true
+
+    database_uri: 'sqlite://$SLICEHOME/oonib_test_db.db'
+    db_threadpool_size: 10
+
+    logfile: '$SLICEHOME/oonib.log'
     pidfile: '$SLICEHOME/oonib.pid'
     nodaemon: false
     originalname: Null
     chroot: Null
-    rundir: .
+    rundir: '$SLICEHOME'
     umask: Null
     euid: Null
     uid: $OONIB_UID
@@ -73,27 +91,31 @@ main:
     uuid: Null
     no_save: true
     profile: Null
-    debug: Null
+    debug: false
     stale_time: 3600
 
 helpers:
-    http_return_request:
+    http-return-json-headers:
+        address: Null
         port: $HTTP_ECHO_PORT
         server_version: Apache
 
-    tcp_echo:
+    tcp-echo:
+        address: Null
         port: $TCP_ECHO_PORT
 
     daphn3:
         yaml_file: Null
         pcap_file: Null
-        port: 57003
+        port: Null
 
     dns:
-        udp_port: 57004
-        tcp_port: 57005
+        address: Null
+        udp_port: Null
+        tcp_port: Null
 
     ssl:
+        address: Null
         private_key: '$SLICEHOME/private.key'
         certificate: '$SLICEHOME/certificate.crt'
         port: 443" > $SLICEHOME/oonib.conf

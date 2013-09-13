@@ -87,7 +87,7 @@ main:
     deck_dir: '$DECK_DIR'
 
     policy_file: '$DATA_DIR/policy.yaml'
-    bouncer_file: '$DATA_DIR/bouncer.yaml'
+    bouncer_file: Null
 
     tor_datadir: '$TOR_DIR'
     tor_binary: '$SLICEHOME/bin/tor'

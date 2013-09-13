@@ -57,6 +57,7 @@ mkdir -p $INPUT_DIR
 mkdir -p $DECK_DIR
 
 chown $SLICENAME:slices $REPORT_DIR
+chown -R $SLICENAME:slices $DATA_DIR
 
 # drop a config in $SLICEHOME
 echo "

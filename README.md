@@ -20,6 +20,7 @@ Ensure that you have them all before starting.
 - rpm-build (yum install rpm-build)
 - m4 (yum install m4)
 - A *recursive* clone of the ooni-support repository.
+    - `git clone --recursive https://github.com/m-lab-tools/ooni-support.git`
 
 ### For Ooni Installation
 

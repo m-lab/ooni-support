@@ -24,31 +24,30 @@ Ensure that you have them all before starting.
 
 ### For Ooni Installation
 
-- The Ooni `.rpm` file.
+- The Ooni `.rpm` file (See the "Building the Ooni RPM" section below).
 - A clone of the `ooni-support` repository.
 - `/etc/mlab/slice-functions` must exist, containing the M-Lab slice functions.
 
 Building the Ooni RPM
 ----------------------
 
-With the recursive clone of `ooni-support` in a temporary not inside
+With the recursive clone of `ooni-support` in a temporary that is *not* inside
 `/home/mlab_ooni`, perform the following steps.
 
 1. Change directories into the `ooni-support` clone.
 2. Run `git checkout <tag>` where `<tag>` is the tag you want to build.
-3. Ensure that it is OK to delete everything in `/home/mlab_ooni`.
+3. Ensure that it is OK to delete everything in `/home/mlab_ooni`. Create
+   a backup just in case.
 4. Run `./package/slicebuild.sh mlab_ooni`.
 
-**WARNING:** The last step will remove all files and subdirectories in
-`/home/mlab_ooni`.
+**WARNING:** The last step will remove *everything* in `/home/mlab_ooni`.
 
 **NOTE:** The `ooni-support` clone MUST be outside of `/home/mlab_ooni`,
 otherwise, otherwise an `rsync` copy will go into an infinite loop because of
 the destination directory being inside the source directory.
 
 This will create an `mlab_ooni-XYZ.rpm` file (where `XYZ` is the version number
-and architecture name) inside of `build/slicebase-i386/i686/` in the
-`ooni-support` clone.
+and architecture name) in `ooni-support/build/slicebase-i386/i686/`.
 
 Installing the RPM
 -------------------

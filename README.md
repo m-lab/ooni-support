@@ -1,11 +1,10 @@
 M-Lab Deployment Process
 =========================
 
-This document describes the process of deploying Ooni on M-Lab. It assumes the
-steps in the [Ooni Deployment Process](http://example.org/) document have been
-completed by the Ooni team.
-
-**TODO:** Fix the above URL.
+This document describes the process of deploying
+Ooni on M-Lab. It assumes the steps in the [Ooni Release
+Procedure](https://github.com/TheTorProject/ooni-spec/blob/master/Release-Procedure.md)
+document have been completed by the Ooni team.
 
 What's Required
 ----------------

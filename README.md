@@ -67,9 +67,12 @@ To initialize the Ooni configuration, change directories into the `init`
 subdirectory of the `ooni-support` repository, then run the following commands:
 
     sudo mkdir /etc/mlab
-    sudo ./initialize.sh
+    ./initialize.sh
 
 This will create the Ooni configuration. Ooni is now ready to be started.
+
+**Note:** You don't have to run `initialize.sh` as root, but it does use sudo
+internally, so whichever user you run it as needs to have `sudo` privileges.
 
 Starting and Stopping Ooni
 ---------------------------

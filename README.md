@@ -22,8 +22,8 @@ Ensure that you have them all before starting.
 - SVN: `yum install svn`
 - rpm-build: `yum install rpm-build`
 - m4: `yum install m4`
-- A *recursive* clone of the `ooni-support` repository.
-    - `git clone --recursive https://github.com/m-lab-tools/ooni-support.git`
+- Read access to the [`ooni-support` repository on
+  GitHub](https://github.com/m-lab-tools/ooni-support).
 
 ### For Ooni Installation
 
@@ -32,14 +32,19 @@ Ensure that you have them all before starting.
 Building the Ooni RPM
 ----------------------
 
-With the recursive clone of `ooni-support` in a temporary that is *not* inside
-`/home/mlab_ooni`, perform the following steps.
+Follow these steps to build the Ooni RPM.
 
-1. Change directories into the `ooni-support` clone.
-2. Run `git checkout <tag>` where `<tag>` is the tag you want to build.
-3. Ensure that it is OK to delete everything in `/home/mlab_ooni`. Create
+1. First, create a temporary directory *outside* of `/home/mlab_ooni` and clone
+   `ooni-support` there: 
+
+        cd /tmp/
+        git clone --recursive https://github.com/m-lab-tools/ooni-support.git
+   
+2. Change directories into the `ooni-support` clone.
+3. Run `git checkout <tag>` where `<tag>` is the tag you want to build.
+4. Ensure that it is OK to delete everything in `/home/mlab_ooni`. Create
    a backup just in case.
-4. Run `./package/slicebuild.sh mlab_ooni`.
+5. Run `./package/slicebuild.sh mlab_ooni`.
 
 **WARNING:** The last step will remove *everything* in `/home/mlab_ooni`.
 

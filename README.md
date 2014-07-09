@@ -6,6 +6,10 @@ Ooni on M-Lab. It assumes the steps in the [Ooni Release
 Procedure](https://github.com/TheTorProject/ooni-spec/blob/master/Release-Procedure.md)
 document have been completed by the Ooni team.
 
+More details about M-Lab development and deployment procedures, not specific to
+Ooni, are in the [m-lab-tools package repository
+README](https://github.com/m-lab-tools/package).
+
 What's Required
 ----------------
 

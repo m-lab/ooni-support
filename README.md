@@ -24,8 +24,6 @@ Ensure that you have them all before starting.
 ### For Ooni Installation
 
 - The Ooni `.rpm` file (See the "Building the Ooni RPM" section below).
-- A clone of the `ooni-support` repository.
-- `/etc/mlab/slice-functions` must exist, containing the M-Lab slice functions.
 
 Building the Ooni RPM
 ----------------------
@@ -54,6 +52,7 @@ Installing the RPM
 With the `mlab_ooni-XYZ.rpm` (where `XYZ` is a placeholder for the version and
 architecture of the build) file, run the following commands:
 
+    sudo yum install openssl
     sudo yum install yum-cron
     sudo rpm -Uvh mlab_ooni-XYZ.rpm
 
@@ -63,10 +62,10 @@ configuration.
 Initializing the Ooni Configuration
 ------------------------------------
 
-To initialize the Ooni configuration, change directories into the `init`
-subdirectory of the `ooni-support` repository, then run the following commands:
+To initialize the Ooni configuration, change directories into
+`/home/mlab_ooni/init`, which was created by installing the `.rpm`, then run the
+following commands:
 
-    sudo mkdir /etc/mlab
     ./initialize.sh
 
 This will create the Ooni configuration. Ooni is now ready to be started.
@@ -78,8 +77,8 @@ Starting and Stopping Ooni
 ---------------------------
 
 To start and stop the Ooni backend service, change directories into the `init`
-subdirectory of the `ooni-support` repository and run `start.sh` and `stop.sh`
-respectively.
+subdirectory of the `ooni-support` repository and run `sudo ./start.sh` and
+`sudo ./stop.sh` respectively.
 
 Testing
 --------

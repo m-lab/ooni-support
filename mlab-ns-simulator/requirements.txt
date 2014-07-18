@@ -1,0 +1,2 @@
+Twisted==13.2.0
+#https://pypi.python.org/packages/source/T/Twisted/Twisted-13.0.0.tar.bz2#md5=68afff4e1efd3757d934e39f70c99f57#egg=Twisted

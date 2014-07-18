@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-from setuptools import setup, find_packages
+from os.path import abspath, dirname, join
+import subprocess
+from setuptools import setup, find_packages, Command
 
 
 # Note: We follow PEP-0440 versioning:
@@ -8,6 +10,72 @@ from setuptools import setup, find_packages
 
 VERSION = '0.1.dev0'
 
+# Note: The dependency versions are chosen to match ooni-backend where they overlap:
+TwistedDependency = 'twisted == 13.0' # BUG: Include the hash as per ooni-backend.
+
+
+def run(*args):
+    print 'Running: {0!r}'.format(args)
+    try:
+        subprocess.check_call(args, shell=False)
+    except subprocess.CalledProcessError, e:
+        print 'Process exited with {0!r} exit status.'.format(e.returncode)
+        raise
+
+
+class TestWithCoverageAndTrialInAVirtualEnvCommand (Command):
+    """Run unit tests with coverage analysis and reporting in a virtualenv."""
+
+    # Internal settings:
+    TestToolRequirements = [
+        TwistedDependency,
+        'coverage == 3.7.1',
+        ]
+
+    description = __doc__
+
+    user_options = [
+    ]
+
+    def __init__(self, dist):
+        Command.__init__(self, dist)
+
+        self.oonisupportdir = dirname(dirname(abspath(__file__)))
+        self.pkgdir = join(self.oonisupportdir, 'mlab-ns-simulator')
+        self.testdir = join(self.pkgdir, 'build', 'test')
+        self.venvdir = join(self.testdir, 'venv')
+
+        bindir = join(self.venvdir, 'bin')
+        self.pip = join(bindir, 'pip')
+        self.coverage = join(bindir, 'coverage')
+        self.trial = join(bindir, 'trial')
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        self._initialize_virtualenv()
+        self._install_testing_tools()
+
+        pypkg = join(self.pkgdir, 'mlabsim')
+
+        run(self.coverage, 'run', '--branch', '--source', pypkg, self.trial, pypkg)
+
+    def _initialize_virtualenv(self):
+        virtualenvscript = join(self.oonisupportdir, 'virtualenv', 'virtualenv.py')
+        run('python', virtualenvscript, '--no-site-packages', self.venvdir)
+
+    def _install_testing_tools(self):
+        reqspath = join(self.testdir, 'test-tool-requirements.txt')
+
+        with file(reqspath, 'w') as f:
+            for req in self.TestToolRequirements:
+                f.write(req + '\n')
+
+        run(self.pip, 'install', '--use-mirrors', '--requirement', reqspath)
 
 setup(
     # Humanish metadata:
@@ -29,8 +97,12 @@ setup(
     test_suite='mlabsim.tests',
 
     # Dependencies:
-    # Note: The dependency versions are chosen to match ooni-backend where they overlap:
     install_requires=[
-        'twisted == 13.0',
-        ]
+        TwistedDependency,
+        ],
+
+    # Command customization:
+    cmdclass={
+        'test': TestWithCoverageAndTrialInAVirtualEnvCommand,
+        },
     )

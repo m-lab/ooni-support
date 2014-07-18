@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from os.path import abspath, dirname, join
 import subprocess
 from setuptools import setup, find_packages, Command
@@ -61,6 +62,9 @@ class TestWithCoverageAndTrialInAVirtualEnvCommand (Command):
         self._install_testing_tools()
 
         pypkg = join(self.pkgdir, 'mlabsim')
+
+        # Coverage and trial dump things into cwd, so cd:
+        os.chdir(self.testdir)
 
         run(self.coverage, 'run', '--branch', '--source', pypkg, self.trial, pypkg)
 

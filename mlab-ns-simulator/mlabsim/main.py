@@ -6,6 +6,9 @@ from twisted.internet import reactor
 from twisted.python import log
 from twisted.web import server, resource
 
+from mlabsim import lookup
+from mlabsim import update
+
 
 DESCRIPTION = """
 A simulator for mlab-ns which is augmented with new features to support Ooni integration.
@@ -18,10 +21,13 @@ def main(args=sys.argv[1:], _reactor=reactor):
     opts = parse_args(args)
     init_logging(getattr(logging, opts.loglevel))
 
+    db = {}
     root = resource.Resource()
+    root.putChild('ooni', lookup.LookupSimulatorResource(db))
+    root.putChild('update-ooni', update.UpdateResource(db))
     site = server.Site(root)
-    _reactor.listenTCP(PORT, site)
 
+    _reactor.listenTCP(PORT, site)
     _reactor.run()
 
 

@@ -14,6 +14,6 @@ class main_Tests (unittest.TestCase):
 
         main.main([], m_reactor)
 
-        m_reactor.listenTCP.assert_called_with(main.PORT, mock.anything)
+        m_reactor.listenTCP.assert_called_with(main.PORT, mock.ANY)
         m_reactor.run.assert_called_with()
 

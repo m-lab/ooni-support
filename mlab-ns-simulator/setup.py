@@ -31,6 +31,7 @@ class TestWithCoverageAndTrialInAVirtualEnvCommand (Command):
     TestToolRequirements = [
         TwistedDependency,
         'coverage == 3.7.1',
+        'mock >= 1.0.1',
         ]
 
     description = __doc__
@@ -61,12 +62,15 @@ class TestWithCoverageAndTrialInAVirtualEnvCommand (Command):
         self._initialize_virtualenv()
         self._install_testing_tools()
 
-        pypkg = join(self.pkgdir, 'mlabsim')
+        pkgname = 'mlabsim'
+        pypkg = join(self.pkgdir, pkgname)
+
+        os.environ['PYTHONPATH'] = '{0}:{1}'.format(self.pkgdir, os.environ['PYTHONPATH'])
 
         # Coverage and trial dump things into cwd, so cd:
         os.chdir(self.testdir)
 
-        run(self.coverage, 'run', '--branch', '--source', pypkg, self.trial, pypkg)
+        run(self.coverage, 'run', '--branch', '--source', pypkg, self.trial, pkgname)
         run(self.coverage, 'html')
 
     def _initialize_virtualenv(self):

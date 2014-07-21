@@ -67,6 +67,7 @@ class TestWithCoverageAndTrialInAVirtualEnvCommand (Command):
         os.chdir(self.testdir)
 
         run(self.coverage, 'run', '--branch', '--source', pypkg, self.trial, pypkg)
+        run(self.coverage, 'html')
 
     def _initialize_virtualenv(self):
         virtualenvscript = join(self.oonisupportdir, 'virtualenv', 'virtualenv.py')

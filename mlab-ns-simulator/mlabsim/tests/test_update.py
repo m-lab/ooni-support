@@ -1,5 +1,4 @@
 import json
-import urllib
 
 from twisted.trial import unittest
 from twisted.web import server
@@ -18,16 +17,16 @@ class UpdateResourceTests (unittest.TestCase):
         tool_extra = {
             'collector_onion': 'testfakenotreal.onion',
             }
-        tool_extra_param = urllib.quote(json.dumps(tool_extra))
+        tool_extra_param = json.dumps(tool_extra)
 
         # Mocks:
         db = {}
         m_request = MagicMock()
 
         # Fake a request with sufficient parameters:
-        m_request.params = {
-            'fqdn': fqdn,
-            'tool_extra': tool_extra_param,
+        m_request.args = {
+            'fqdn': [fqdn],
+            'tool_extra': [tool_extra_param],
             }
 
         # Execute the code under test:
@@ -55,16 +54,16 @@ class UpdateResourceTests (unittest.TestCase):
             'collector_onion': 'testfakenotreal.onion',
             }
         # The slice, [1:] is to mangle the json:
-        tool_extra_param = urllib.quote(json.dumps(tool_extra)[1:])
+        tool_extra_param = json.dumps(tool_extra)[1:]
 
         # Mocks / components:
         m_db = MagicMock()
         m_request = MagicMock()
 
         # Fake a request with sufficient parameters:
-        m_request.params = {
-            'fqdn': fqdn,
-            'tool_extra': tool_extra_param,
+        m_request.args = {
+            'fqdn': [fqdn],
+            'tool_extra': [tool_extra_param],
             }
 
         # Execute the code under test:

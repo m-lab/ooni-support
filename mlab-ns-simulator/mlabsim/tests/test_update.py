@@ -61,7 +61,8 @@ class UpdateResourceTests (unittest.TestCase):
         # Verify that a 200 response was sent:
         self.assertEqual(
             self.m_request.mock_calls,
-            [call.setResponseCode(200, 'ok'),
+            [call.content.read(),
+             call.setResponseCode(200, 'ok'),
              call.finish(),
              ])
 
@@ -82,6 +83,7 @@ class UpdateResourceTests (unittest.TestCase):
         # Verify that a 400 response was sent:
         self.assertEqual(
             self.m_request.mock_calls,
-            [call.setResponseCode(400, 'invalid'),
+            [call.content.read(),
+             call.setResponseCode(400, 'invalid'),
              call.finish(),
              ])

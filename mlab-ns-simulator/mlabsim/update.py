@@ -32,24 +32,19 @@ class UpdateResource (resource.Resource):
         self._log = logging.getLogger(type(self).__name__)
 
     def render_PUT(self, request):
-        self._log.debug('Request args: %r', request.args)
+        body = request.content.read()
+        self._log.debug('Request body: %r', body)
 
-        dbentry = {}
+        try:
+            dbentry = json.loads(body)
+        except ValueError:
+            request.setResponseCode(400, 'invalid')
+            request.finish()
+            return NOT_DONE_YET
 
-        for name in DBEntryNames:
-            # BUG: Multiple values not handled nor tested:
-            [value] = request.args[name]
-            if name == 'tool_extra':
-                try:
-                    value = json.loads(value)
-                except ValueError:
-                    request.setResponseCode(400, 'invalid')
-                    request.finish()
-                    return NOT_DONE_YET
+        fqdn = dbentry['fqdn']
 
-            dbentry[name] = value
-
-        self._db[dbentry['fqdn']] = dbentry
+        self._db[fqdn] = dbentry
 
         request.setResponseCode(200, 'ok')
         request.finish()

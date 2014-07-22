@@ -10,6 +10,7 @@ would rely on if mlab-ns were to add those features.
 Also, this is a twisted web server rather than appengine.
 """
 
+import json
 
 from twisted.web import resource
 from twisted.web.server import NOT_DONE_YET
@@ -17,15 +18,16 @@ from twisted.web.server import NOT_DONE_YET
 
 class LookupSimulatorResource (resource.Resource):
     def __init__(self, db):
-        # FIXME - db is some simple memory structure holding info;
-        # the details will solidfy soon.  This resource reads from
-        # this structure.
-
+        """db is a dict mapping { fqdn -> other_stuff }; inserts come from mlabsim.update."""
         resource.Resource.__init__(self)
         self._db = db
 
     def render_GET(self, request):
-        # FIXME: This is not implemented yet.
-        request.setResponseCode(500, 'NOT IMPLEMENTED')
-        request.finish()
+        if request.args['match'] == ['all'] and request.args.get('format', ['json']) == ['json']:
+            request.setResponseCode(200, 'ok')
+            request.write(json.dumps(self._db.values(), indent=2, sort_keys=True))
+            request.finish()
+        else:
+            request.setResponseCode(400, 'invalid')
+            request.finish()
         return NOT_DONE_YET

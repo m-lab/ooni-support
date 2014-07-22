@@ -21,98 +21,67 @@ Example response of production: http://mlab-ns.appspot.com/npad?format=json
 
 class UpdateResourceTests (unittest.TestCase):
 
-    def test_render_PUT_valid_parameters(self):
+    def setUp(self):
         # Test data:
-        fqdn = 'mlab01.ooni-tests.not-real.except-it-actually-could-be.example.com'
+        self.fqdn = 'mlab01.ooni-tests.not-real.except-it-actually-could-be.example.com'
 
-        tool_extra = {
-            'collector_onion': 'testfakenotreal.onion',
-            }
-
-        expectedentry = {
-            'fqdn': fqdn,
+        self.expectedentry = {
+            'fqdn': self.fqdn,
             'city': 'Somewheresville',
             'country': 'US',
             'ip': ['127.2.3.4', '::1'],
             'port': 8421,
             'site': 'mlab01',
-            'tool_extra': tool_extra
+            'tool_extra': {
+                'collector_onion': 'testfakenotreal.onion',
+                },
             }
 
-        # Mocks:
-        db = {}
-        m_request = MagicMock()
+        self.entryjson = json.dumps(self.expectedentry, indent=2, sort_keys=True)
 
-        # Fake a request with sufficient parameters:
-        # The args are just expectedentry with each value in a single-item list:
-        m_request.args = dict( (k, [v]) for (k, v) in expectedentry.iteritems() )
+        self.m_db = MagicMock()
+        self.m_request = MagicMock()
 
-        # Except tool_extra is json encoded:
-        m_request.args['tool_extra'] = [json.dumps(tool_extra)]
+        self.ur = update.UpdateResource(self.m_db)
+
+    def test_render_PUT_valid_parameters(self):
+        self.m_request.content.read.return_value = self.entryjson
 
         # Execute the code under test:
-        ur = update.UpdateResource(db)
-        retval = ur.render_PUT(m_request)
+        retval = self.ur.render_PUT(self.m_request)
 
         # Verifications:
         self.assertEqual(server.NOT_DONE_YET, retval)
 
-        # Verify that m_db now stores fqdn: tool_extra:
-        self.assertEqual({fqdn: expectedentry}, db)
+        # Verify that m_db now stores the expected entry:
+        self.assertEqual(
+            self.m_db.mock_calls,
+            [call.__setitem__(self.fqdn, self.expectedentry)])
 
         # Verify that a 200 response was sent:
         self.assertEqual(
-            m_request.mock_calls,
+            self.m_request.mock_calls,
             [call.setResponseCode(200, 'ok'),
              call.finish(),
              ])
 
     def test_render_PUT_malformed_JSON(self):
-        # Test data:
-        fqdn = 'mlab01.ooni-tests.not-real.except-it-actually-could-be.example.com'
-
-        tool_extra = {
-            'collector_onion': 'testfakenotreal.onion',
-            }
-
-        expectedentry = {
-            'fqdn': fqdn,
-            'city': 'Somewheresville',
-            'country': 'US',
-            'ip': ['127.2.3.4', '::1'],
-            'port': 8421,
-            'site': 'mlab01',
-            'tool_extra': tool_extra
-            }
-
-        # Mocks / components:
-        m_db = MagicMock()
-        m_request = MagicMock()
-
-        # Fake a request with sufficient parameters:
-        # The args are just expectedentry with each value in a single-item list:
-        m_request.args = dict( (k, [v]) for (k, v) in expectedentry.iteritems() )
-
-        # Except tool_extra is json encoded then mangled with a slice:
-        m_request.args['tool_extra'] = [json.dumps(tool_extra)[:-1]]
-
+        self.m_request.content.read.return_value = self.entryjson[:-1] # Mangled with slice.
 
         # Execute the code under test:
-        ur = update.UpdateResource(m_db)
-        retval = ur.render_PUT(m_request)
+        retval = self.ur.render_PUT(self.m_request)
 
         # Verifications:
         self.assertEqual(server.NOT_DONE_YET, retval)
 
         # Verify that m_db was not modified (or accessed) in any way:
         self.assertEqual(
-            m_db.mock_calls,
-            [],
-            )
+            self.m_db.mock_calls,
+            [])
 
         # Verify that a 400 response was sent:
         self.assertEqual(
-            m_request.mock_calls,
+            self.m_request.mock_calls,
             [call.setResponseCode(400, 'invalid'),
              call.finish(),
              ])

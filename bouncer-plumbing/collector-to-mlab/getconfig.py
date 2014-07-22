@@ -22,8 +22,17 @@ def get_yaml_config_string(oonib_conf='/home/mlab_ooni/oonib.conf'):
     # Find this slice's IP address.
     slice_ipv4_address = get_ip_address()
 
-    # FIXME: Fill with the actual test helper addresses.
+    # List the running test helpers and their addresses.
     test_helpers = {}
+    # FIXME: This should be a dynamically-generated list of all the test helpers
+    # that are actually running. However, I have no idea how to infer which ones
+    # are running and which ones aren't from the oonib.conf, since it seems to
+    # be the same regardless of whether they're running or not (is there some
+    # other source of information?)
+    tcp_helpers_port = oonib_conf['helpers']['tcp-echo']['port']
+    test_helpers['tcp-echo'] = slice_ipv4_address + ':' + tcp_helpers_port
+    http_return_headers_port = oonib_conf['helpers']['http-return-json-headers']['port']
+    test_helpers['http-return-json-headers'] = 'http://' + slice_ipv4_address + ':' + http_return_headers_port
 
     config_part = {
         tor_onion_address: {

@@ -80,7 +80,7 @@ class LookupResourceTests (unittest.TestCase):
             m_request = MagicMock()
             m_request.args = args
 
-            expectedbody = json.dumps({"error", errmsg}, indent=2, sort_key=True)
+            expectedbody = json.dumps({"error": errmsg}, indent=2, sort_keys=True)
 
             lsr = lookup.LookupSimulatorResource(m_db)
             retval = lsr.render_GET(m_request)

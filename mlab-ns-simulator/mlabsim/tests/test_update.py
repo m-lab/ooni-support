@@ -63,6 +63,8 @@ class UpdateResourceTests (unittest.TestCase):
             self.m_request.mock_calls,
             [call.content.read(),
              call.setResponseCode(200, 'ok'),
+             call.setHeader('content-type', 'text/plain'),
+             call.write('Ok.'),
              call.finish(),
              ])
 
@@ -85,5 +87,36 @@ class UpdateResourceTests (unittest.TestCase):
             self.m_request.mock_calls,
             [call.content.read(),
              call.setResponseCode(400, 'invalid'),
+             call.setHeader('content-type', 'text/plain'),
+             call.write("Malformed JSON body."),
+             call.finish(),
+             ])
+
+    def test_render_PUT_missing_fqdn(self):
+        malformedentry = dict(self.expectedentry)
+        del malformedentry['fqdn']
+
+        body = json.dumps(malformedentry, indent=2, sort_keys=True)
+
+        self.m_request.content.read.return_value = body
+
+        # Execute the code under test:
+        retval = self.ur.render_PUT(self.m_request)
+
+        # Verifications:
+        self.assertEqual(server.NOT_DONE_YET, retval)
+
+        # Verify that m_db was not modified (or accessed) in any way:
+        self.assertEqual(
+            self.m_db.mock_calls,
+            [])
+
+        # Verify that a 400 response was sent:
+        self.assertEqual(
+            self.m_request.mock_calls,
+            [call.content.read(),
+             call.setResponseCode(400, 'invalid'),
+             call.setHeader('content-type', 'text/plain'),
+             call.write("Missing 'fqdn' field."),
              call.finish(),
              ])

@@ -60,6 +60,43 @@ class LookupResourceTests (unittest.TestCase):
         self.assertEqual(
             m_request.mock_calls,
             [call.setResponseCode(200, 'ok'),
+             call.setHeader('content-type', 'application/json'),
              call.write(expectedout),
              call.finish(),
              ])
+
+
+    def test_render_GET_bad_args(self):
+        vector = [
+            ({}, "Missing 'match' parameter."),
+            ({'match': ['a', 'b']}, "Multiple 'match' parameters unsupported."),
+            ({'match': ['best']}, "Only 'match=all' parameter supported."),
+            ({'match': ['all'], 'format': ['a', 'b']}, "Multiple 'format' parameters unsupported."),
+            ({'match': ['all'], 'format': ['foo']}, "Only 'format=json' parameter supported."),
+            ]
+
+        for (args, errmsg) in vector:
+            m_db = MagicMock()
+            m_request = MagicMock()
+            m_request.args = args
+
+            expectedbody = json.dumps({"error", errmsg}, indent=2, sort_key=True)
+
+            lsr = lookup.LookupSimulatorResource(m_db)
+            retval = lsr.render_GET(m_request)
+
+            # Verifications:
+            self.assertEqual(server.NOT_DONE_YET, retval)
+
+            # Verify that a 400 response was sent:
+            self.assertEqual(
+                m_request.mock_calls,
+                [call.setResponseCode(400, 'invalid'),
+                 call.setHeader('content-type', 'application/json'),
+                 call.write(expectedbody),
+                 call.finish(),
+                 ])
+
+            # Verify that db was not touched:
+            self.assertEqual(m_db.mock_calls, [])
+

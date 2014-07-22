@@ -7,6 +7,7 @@ Warning: This doesn't have any security properties!  We need a way to
 prevent the addition of malicious entries.
 """
 
+import logging
 import json
 
 from twisted.web import resource
@@ -28,8 +29,11 @@ class UpdateResource (resource.Resource):
         """db is a dict which will be modified to map { fqdn -> other_details }"""
         resource.Resource.__init__(self)
         self._db = db
+        self._log = logging.getLogger(type(self).__name__)
 
     def render_PUT(self, request):
+        self._log.debug('Request args: %r', request.args)
+
         dbentry = {}
 
         for name in DBEntryNames:

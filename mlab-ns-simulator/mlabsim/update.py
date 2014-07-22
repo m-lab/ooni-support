@@ -13,6 +13,16 @@ from twisted.web import resource
 from twisted.web.server import NOT_DONE_YET
 
 
+DBEntryNames = [
+    'city',
+    'country',
+    'fqdn',
+    'ip',
+    'port',
+    'site',
+    'tool_extra',
+    ]
+
 class UpdateResource (resource.Resource):
     def __init__(self, db):
         """db is a dict which will be modified to map { fqdn -> other_details }"""
@@ -20,22 +30,24 @@ class UpdateResource (resource.Resource):
         self._db = db
 
     def render_PUT(self, request):
-        [fqdn, tool_extra_json] = self._parse_args(request.args)
+        dbentry = {}
 
-        try:
-            tool_extra = json.loads(tool_extra_json)
-        except ValueError:
-            request.setResponseCode(400, 'invalid')
-            request.finish()
-        else:
-            self._db[fqdn] = {'tool_extra': tool_extra}
+        for name in DBEntryNames:
+            # BUG: Multiple values not handled nor tested:
+            [value] = request.args[name]
+            if name == 'tool_extra':
+                try:
+                    value = json.loads(value)
+                except ValueError:
+                    request.setResponseCode(400, 'invalid')
+                    request.finish()
+                    return NOT_DONE_YET
 
-            request.setResponseCode(200, 'ok')
-            request.finish()
+            dbentry[name] = value
+
+        self._db[dbentry['fqdn']] = dbentry
+
+        request.setResponseCode(200, 'ok')
+        request.finish()
 
         return NOT_DONE_YET
-
-    def _parse_args(self, args):
-        for name in ['fqdn', 'tool_extra']:
-            [val] = args[name]
-            yield val

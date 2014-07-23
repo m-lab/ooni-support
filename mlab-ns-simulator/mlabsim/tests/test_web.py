@@ -50,6 +50,13 @@ class MlabSimRequestTests (unittest.TestCase):
 
         m_ssajr.assert_called_with(400, obj)
 
+    @patch('mlabsim.web.MlabSimRequest._sendStatusAndJsonResponse')
+    def test_sendJsonErrorMessage(self, m_ssajr):
+
+        self.req.sendJsonErrorMessage('Boo!')
+
+        m_ssajr.assert_called_with(400, {'error': 'Boo!'})
+
     @patch('twisted.web.server.Request.setResponseCode')
     @patch('twisted.web.server.Request.setHeader')
     @patch('twisted.web.server.Request.write')

@@ -24,6 +24,8 @@ def get_yaml_config_string(oonib_conf='/home/mlab_ooni/oonib.conf'):
         f.close()
     except IOError:
         return_failure("Couldn't read Tor hostname file")
+    except KeyError:
+        return_failure("Oonib.conf is not valid or is missing information.")
 
     # Find this slice's IP address.
     slice_ipv4_address = get_ipv4_address()
@@ -35,10 +37,13 @@ def get_yaml_config_string(oonib_conf='/home/mlab_ooni/oonib.conf'):
     # are running and which ones aren't from the oonib.conf, since it seems to
     # be the same regardless of whether they're running or not (is there some
     # other source of information?)
-    tcp_helpers_port = oonib_conf_parsed['helpers']['tcp-echo']['port']
-    test_helpers['tcp-echo'] = slice_ipv4_address + ':' + str(tcp_helpers_port)
-    http_return_headers_port = oonib_conf_parsed['helpers']['http-return-json-headers']['port']
-    test_helpers['http-return-json-headers'] = 'http://' + slice_ipv4_address + ':' + str(http_return_headers_port)
+    try:
+        tcp_helpers_port = oonib_conf_parsed['helpers']['tcp-echo']['port']
+        test_helpers['tcp-echo'] = slice_ipv4_address + ':' + str(tcp_helpers_port)
+        http_return_headers_port = oonib_conf_parsed['helpers']['http-return-json-headers']['port']
+        test_helpers['http-return-json-headers'] = 'http://' + slice_ipv4_address + ':' + str(http_return_headers_port)
+    except KeyError:
+        return_failure("Oonib.conf is not valid or is missing information.")
 
     config_part = {
         tor_onion_address: {

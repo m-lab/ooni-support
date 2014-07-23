@@ -38,23 +38,16 @@ class UpdateResource (resource.Resource):
         try:
             dbentry = json.loads(body)
         except ValueError:
-            self._send_response(request, 400, 'invalid', 'Malformed JSON body.')
+            request.sendJsonErrorMessage('Malformed JSON body.')
             return NOT_DONE_YET
 
         try:
             fqdn = dbentry['fqdn']
         except KeyError:
-            self._send_response(request, 400, 'invalid', "Missing 'fqdn' field.")
+            request.sendJsonErrorMessage("Missing 'fqdn' field.")
             return NOT_DONE_YET
 
         self._db[fqdn] = dbentry
 
-        self._send_response(request, 200, 'ok', 'Ok.')
+        request.sendJsonResponse('Ok.')
         return NOT_DONE_YET
-
-    def _send_response(self, request, code, status, message):
-        request.setResponseCode(code, status)
-        request.setHeader('content-type', 'text/plain')
-        request.write(message)
-        request.finish()
-

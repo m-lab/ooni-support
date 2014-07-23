@@ -62,10 +62,7 @@ class UpdateResourceTests (unittest.TestCase):
         self.assertEqual(
             self.m_request.mock_calls,
             [call.content.read(),
-             call.setResponseCode(200, 'ok'),
-             call.setHeader('content-type', 'text/plain'),
-             call.write('Ok.'),
-             call.finish(),
+             call.sendJsonResponse('Ok.'),
              ])
 
     def test_render_PUT_malformed_JSON(self):
@@ -86,10 +83,7 @@ class UpdateResourceTests (unittest.TestCase):
         self.assertEqual(
             self.m_request.mock_calls,
             [call.content.read(),
-             call.setResponseCode(400, 'invalid'),
-             call.setHeader('content-type', 'text/plain'),
-             call.write("Malformed JSON body."),
-             call.finish(),
+             call.sendJsonErrorMessage('Malformed JSON body.'),
              ])
 
     def test_render_PUT_missing_fqdn(self):
@@ -115,8 +109,5 @@ class UpdateResourceTests (unittest.TestCase):
         self.assertEqual(
             self.m_request.mock_calls,
             [call.content.read(),
-             call.setResponseCode(400, 'invalid'),
-             call.setHeader('content-type', 'text/plain'),
-             call.write("Missing 'fqdn' field."),
-             call.finish(),
+             call.sendJsonErrorMessage("Missing 'fqdn' field."),
              ])

@@ -1,5 +1,3 @@
-import json
-
 from twisted.trial import unittest
 from twisted.web import server
 
@@ -37,8 +35,6 @@ class LookupResourceTests (unittest.TestCase):
                 },
             ]
 
-        expectedout = json.dumps(entries, indent=2, sort_keys=True)
-
         # Mocks:
         db = dict( (entry['fqdn'], entry) for entry in entries )
         m_request = MagicMock()
@@ -59,11 +55,7 @@ class LookupResourceTests (unittest.TestCase):
         # Verify that a 200 response was sent:
         self.assertEqual(
             m_request.mock_calls,
-            [call.setResponseCode(200, 'ok'),
-             call.setHeader('content-type', 'application/json'),
-             call.write(expectedout),
-             call.finish(),
-             ])
+            [call.sendJsonResponse(entries)])
 
 
     def test_render_GET_bad_args(self):
@@ -80,8 +72,6 @@ class LookupResourceTests (unittest.TestCase):
             m_request = MagicMock()
             m_request.args = args
 
-            expectedbody = json.dumps({"error": errmsg}, indent=2, sort_keys=True)
-
             lsr = lookup.LookupSimulatorResource(m_db)
             retval = lsr.render_GET(m_request)
 
@@ -91,11 +81,7 @@ class LookupResourceTests (unittest.TestCase):
             # Verify that a 400 response was sent:
             self.assertEqual(
                 m_request.mock_calls,
-                [call.setResponseCode(400, 'invalid'),
-                 call.setHeader('content-type', 'application/json'),
-                 call.write(expectedbody),
-                 call.finish(),
-                 ])
+                [call.sendJsonErrorMessage(errmsg)])
 
             # Verify that db was not touched:
             self.assertEqual(m_db.mock_calls, [])

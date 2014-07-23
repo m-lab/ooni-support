@@ -11,7 +11,6 @@ Also, this is a twisted web server rather than appengine.
 """
 
 import logging
-import json
 
 from twisted.web import resource
 from twisted.web.server import NOT_DONE_YET
@@ -35,9 +34,9 @@ class LookupSimulatorResource (resource.Resource):
             if format != 'json':
                 raise BadParameter("Only 'format=json' parameter supported.")
         except BadParameter, e:
-            self._send_response(request, 400, 'invalid', {'error': e.args[0]})
+            request.sendJsonErrorMessage(e.args[0])
         else:
-            self._send_response(request, 200, 'ok', self._db.values())
+            request.sendJsonResponse(self._db.values())
 
         return NOT_DONE_YET
 
@@ -53,12 +52,6 @@ class LookupSimulatorResource (resource.Resource):
             raise BadParameter('Multiple %r parameters unsupported.' % (key,))
         else:
             return value
-
-    def _send_response(self, request, code, status, doc):
-        request.setResponseCode(code, status)
-        request.setHeader('content-type', 'application/json')
-        request.write(json.dumps(doc, indent=2, sort_keys=True))
-        request.finish()
 
 
 class BadParameter (Exception):

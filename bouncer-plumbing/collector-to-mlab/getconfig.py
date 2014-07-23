@@ -6,21 +6,27 @@ import subprocess
 
 # TODO: Accept the oonib.conf path on the command line.
 def get_yaml_config_string(oonib_conf='/home/mlab_ooni/oonib.conf'):
-    # Open this slice's oonib.conf
-    # FIXME: Make sure errors are handled correctly, and file is closed.
-    with open(oonib_conf, "r") as f:
+    try:
+        # Open this slice's oonib.conf
+        f = open(oonib_conf, "r")
         oonib_conf_contents = f.read()
-    oonib_conf_parsed = yaml.safe_load(oonib_conf_contents)
+        f.close()
+        oonib_conf_parsed = yaml.safe_load(oonib_conf_contents)
+    except IOError:
+        return_failure("Couldn't read oonib.conf")
 
-    # Read this slice's (collector) .onion address.
-    tor_datadir = oonib_conf_parsed['main']['tor_datadir']
-    tor_hostname_path = os.path.join(tor_datadir, 'collector', 'hostname')
-    # FIXME: Make sure errors are handled correctly, and file is closed.
-    with open(tor_hostname_path, "r") as f:
+    try:
+        # Read this slice's (collector) .onion address.
+        tor_datadir = oonib_conf_parsed['main']['tor_datadir']
+        tor_hostname_path = os.path.join(tor_datadir, 'collector', 'hostname')
+        f = open(tor_hostname_path, "r")
         tor_onion_address = f.read().strip()
+        f.close()
+    except IOError:
+        return_failure("Couldn't read Tor hostname file")
 
     # Find this slice's IP address.
-    slice_ipv4_address = get_ip_address()
+    slice_ipv4_address = get_ipv4_address()
 
     # List the running test helpers and their addresses.
     test_helpers = {}
@@ -42,9 +48,13 @@ def get_yaml_config_string(oonib_conf='/home/mlab_ooni/oonib.conf'):
 
     return yaml.dump(config_part)
 
-def get_ip_address():
+def get_ipv4_address():
     output = subprocess.Popen(["./get_ipv4.sh"], stdout=subprocess.PIPE).communicate()[0]
     return output.strip()
+
+def return_failure(msg):
+    print "ERROR: " + msg
+    exit(1)
 
 def printconfig():
     print get_yaml_config_string()

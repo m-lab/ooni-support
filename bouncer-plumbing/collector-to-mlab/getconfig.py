@@ -13,7 +13,6 @@ import os
 import yaml
 import subprocess
 
-# TODO: Accept the oonib.conf path on the command line.
 def get_yaml_config_string(oonib_conf):
     try:
         # Open this slice's oonib.conf

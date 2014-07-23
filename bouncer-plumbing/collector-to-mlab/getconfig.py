@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 
+# This script builds the portion of the bouncer.yaml config file for the Ooni
+# collector and test helpers running on an M-Lab slice. To use it, run `python
+# getconfig.py`, and if all goes well, the YAML portion will be printed to
+# stdout. If something goes wrong, an error message will be printed to stdout,
+# and the exit status will be non-zero. The script assumes the oonib.conf file
+# is in /home/mlab_ooni/oonib.conf. If not, pass the path as the first command
+# line option.
+
+import sys
 import os
 import yaml
 import subprocess
 
 # TODO: Accept the oonib.conf path on the command line.
-def get_yaml_config_string(oonib_conf='/home/mlab_ooni/oonib.conf'):
+def get_yaml_config_string(oonib_conf):
     try:
         # Open this slice's oonib.conf
         f = open(oonib_conf, "r")
@@ -61,7 +70,13 @@ def return_failure(msg):
     print "ERROR: " + msg
     exit(1)
 
-def printconfig():
-    print get_yaml_config_string()
+def printconfig(oonib_conf):
+    print get_yaml_config_string(oonib_conf)
 
-printconfig()
+oonib_conf = '/home/mlab_ooni/oonib.conf'
+if len(sys.argv) >= 2:
+    oonib_conf = sys.argv[1]
+
+# FIXME: Push to the mlab-ns simulator instead of printing.
+printconfig(oonib_conf)
+

@@ -54,7 +54,7 @@ def get_yaml_config_string(oonib_conf):
         return_failure("Oonib.conf is not valid or is missing information.")
 
     config_part = {
-        tor_onion_address: {
+        'httpo://' + tor_onion_address: {
             'test-helpers': test_helpers
         }
     }

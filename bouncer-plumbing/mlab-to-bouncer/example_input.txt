@@ -1,0 +1,14 @@
+httpo://1hiderha53f36lsd.onion:
+  test-helpers: {http-return-json-headers: 'http://64.9.225.221:80', tcp-echo: '64.9.225.221:81'}
+----
+httpo://2hiderha53f36lsd.onion:
+  test-helpers: {http-return-json-headers: 'http://64.9.225.221:80', tcp-echo: '64.9.225.221:81'}
+----
+httpo://3hiderha53f36lsd.onion:
+  test-helpers: {http-return-json-headers: 'http://64.9.225.221:80', tcp-echo: '64.9.225.221:81'}
+----
+httpo://4hiderha53f36lsd.onion:
+  test-helpers: {http-return-json-headers: 'http://64.9.225.221:80', tcp-echo: '64.9.225.221:81'}
+----
+httpo://5hiderha53f36lsd.onion:
+  test-helpers: {http-return-json-headers: 'http://64.9.225.221:80', tcp-echo: '64.9.225.221:81'}

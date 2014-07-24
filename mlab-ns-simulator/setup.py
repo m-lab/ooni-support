@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import os
 from os.path import abspath, dirname, join
@@ -75,7 +75,7 @@ class TestWithCoverageAndTrialInAVirtualEnvCommand (Command):
 
     def _initialize_virtualenv(self):
         virtualenvscript = join(self.oonisupportdir, 'virtualenv', 'virtualenv.py')
-        run('python', virtualenvscript, '--no-site-packages', self.venvdir)
+        run('python2', virtualenvscript, '--no-site-packages', self.venvdir)
 
     def _install_testing_tools(self):
         reqspath = join(self.testdir, 'test-tool-requirements.txt')

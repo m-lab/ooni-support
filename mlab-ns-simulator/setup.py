@@ -65,7 +65,10 @@ class TestWithCoverageAndTrialInAVirtualEnvCommand (Command):
         pkgname = 'mlabsim'
         pypkg = join(self.pkgdir, pkgname)
 
-        os.environ['PYTHONPATH'] = '{0}:{1}'.format(self.pkgdir, os.environ['PYTHONPATH'])
+        if 'PYTHONPATH' in os.environ:
+            os.environ['PYTHONPATH'] = '{0}:{1}'.format(self.pkgdir, os.environ['PYTHONPATH'])
+        else:
+            os.environ['PYTHONPATH'] = self.pkgdir
 
         # Coverage and trial dump things into cwd, so cd:
         os.chdir(self.testdir)

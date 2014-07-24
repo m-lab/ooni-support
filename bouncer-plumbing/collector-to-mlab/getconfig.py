@@ -11,9 +11,16 @@
 import sys
 import os
 import yaml
+import json
 import subprocess
+import urllib2
 
-def get_yaml_config_string(oonib_conf):
+# For a hack
+import time
+
+MLAB_SIMULATOR_URL = "http://127.0.0.1:8585/update-ooni"
+
+def get_bouncer_config_part(oonib_conf):
     try:
         # Open this slice's oonib.conf
         f = open(oonib_conf, "r")
@@ -59,7 +66,7 @@ def get_yaml_config_string(oonib_conf):
         }
     }
 
-    return yaml.dump(config_part)
+    return config_part
 
 def get_ipv4_address():
     output = subprocess.Popen(["./get_ipv4.sh"], stdout=subprocess.PIPE).communicate()[0]
@@ -69,13 +76,29 @@ def return_failure(msg):
     print "ERROR: " + msg
     exit(1)
 
-def printconfig(oonib_conf):
-    print get_yaml_config_string(oonib_conf)
+def put_config(oonib_conf):
+    part = get_bouncer_config_part(oonib_conf)
+    put_parameters = {
+        'city': 'foobar',
+        'country': 'foobar',
+        'fqdn': "nothing.google.com" + str(time.time()),
+        'ip': '127.0.0.1',
+        'port': '0',
+        'site': 'mars',
+        'tool_extra': part
+    }
+    send_put(json.dumps(put_parameters))
+    
+def send_put(json_body):
+    # https://stackoverflow.com/questions/111945/is-there-any-way-to-do-http-put-in-python
+    opener = urllib2.build_opener(urllib2.HTTPHandler)
+    request = urllib2.Request(MLAB_SIMULATOR_URL, data=json_body)
+    request.add_header('Content-Type', 'application/json')
+    request.get_method = lambda: 'PUT'
+    url = opener.open(request)
 
 oonib_conf = '/home/mlab_ooni/oonib.conf'
 if len(sys.argv) >= 2:
     oonib_conf = sys.argv[1]
 
-# FIXME: Push to the mlab-ns simulator instead of printing.
-printconfig(oonib_conf)
-
+put_config(oonib_conf)

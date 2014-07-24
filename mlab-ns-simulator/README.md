@@ -17,3 +17,4 @@ https://pypi.python.org/packages/source/v/virtualenv/
 To run the server, from the mlab-ns-simulator directory, run:
 
     PYTHONPATH="." python2 -c 'from mlabsim import main; main.main()'
+

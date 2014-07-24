@@ -13,3 +13,7 @@ latest version from...
 https://pypi.python.org/packages/source/v/virtualenv/
 
 ...extract it, and rename the folder 'virtualenv'.
+
+To run the server, from the mlab-ns-simulator directory, run:
+
+    PYTHONPATH="." python2 -c 'from mlabsim import main; main.main()'

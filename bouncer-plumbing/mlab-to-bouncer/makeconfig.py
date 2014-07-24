@@ -4,11 +4,20 @@ import sys
 import yaml
 import json
 import subprocess
+import os
 
 def read_parts_from_mlabns():
-    # FIXME: Check wget exit status
+    # Download the JSON list of slivers.
     MLAB_NS_QUERY_URL = "http://localhost:8585/ooni?match=all"
-    json_list = subprocess.Popen(["wget", MLAB_NS_QUERY_URL, "-O", "-"], stdout=subprocess.PIPE).communicate()[0]
+    DEVNULL = open(os.devnull, "w")
+    wget = subprocess.Popen(["wget", MLAB_NS_QUERY_URL, "-O", "-"], stdout=subprocess.PIPE, stderr=DEVNULL)
+    json_list = wget.communicate()[0]
+    exit_status = wget.returncode
+    if exit_status != 0:
+        print "wget could not download the JSON list."
+        exit(1)
+
+    # Parse the JSON list, and map it into a list of the tool_extra fields.
     sliver_list = json.loads(json_list)
     part_list = []
     for sliver in sliver_list:

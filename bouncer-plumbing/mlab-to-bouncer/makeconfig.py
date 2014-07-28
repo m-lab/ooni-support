@@ -41,7 +41,7 @@ def write_bouncer_config(path, bouncer_config_contents):
         exit(1)
 
 
-bouncer_config_path = '/home/mlab/data/bouncer.yaml'
+bouncer_config_path = '/home/mlab_ooni/data/bouncer.yaml'
 if len(sys.argv) >= 2:
     bouncer_config_path = sys.argv[1]
 

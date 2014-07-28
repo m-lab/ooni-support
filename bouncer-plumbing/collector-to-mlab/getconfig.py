@@ -75,7 +75,7 @@ def get_bouncer_config_part(oonib_conf):
     return config_part
 
 def get_ipv4_address():
-    output = subprocess.Popen(["./get_ipv4.sh"], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(["/home/mlab_ooni/bin/get_ipv4.sh"], stdout=subprocess.PIPE).communicate()[0]
     return output.strip()
 
 def return_failure(msg):
@@ -101,7 +101,7 @@ def send_put(json_body):
     request = urllib2.Request(MLAB_SIMULATOR_URL, data=json_body)
     request.add_header('Content-Type', 'application/json')
     request.get_method = lambda: 'PUT'
-    url = opener.open(request)
+    opener.open(request)
 
 oonib_conf = '/home/mlab_ooni/oonib.conf'
 if len(sys.argv) >= 2:

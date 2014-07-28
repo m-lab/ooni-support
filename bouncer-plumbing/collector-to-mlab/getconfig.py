@@ -53,8 +53,14 @@ def get_bouncer_config_part(oonib_conf):
     # be the same regardless of whether they're running or not (is there some
     # other source of information?)
     try:
-        tcp_helpers_port = oonib_conf_parsed['helpers']['tcp-echo']['port']
-        test_helpers['tcp-echo'] = slice_ipv4_address + ':' + str(tcp_helpers_port)
+        # For this first M-Lab deployment, we only support one test, which is
+        # http-return-json-headers. In the future, this script should
+        # automatically determine which helpers are running on a slice and
+        # include exactly those. This is tracked in:
+        # https://github.com/m-lab-tools/ooni-support/issues/55
+
+        # tcp_helpers_port = oonib_conf_parsed['helpers']['tcp-echo']['port']
+        # test_helpers['tcp-echo'] = slice_ipv4_address + ':' + str(tcp_helpers_port)
         http_return_headers_port = oonib_conf_parsed['helpers']['http-return-json-headers']['port']
         test_helpers['http-return-json-headers'] = 'http://' + slice_ipv4_address + ':' + str(http_return_headers_port)
     except KeyError:

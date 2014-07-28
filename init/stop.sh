@@ -7,4 +7,5 @@ fi
 
 if test -f $SLICEHOME/mlabsim.pid ; then
     kill `cat $SLICEHOME/mlabsim.pid`
+    rm "$SLICEHOME/mlabsim.pid"
 fi

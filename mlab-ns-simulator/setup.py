@@ -111,6 +111,7 @@ setup(
     # Dependencies:
     install_requires=[
         TwistedDependency,
+        'argparse == 1.2.1',
         ],
 
     # Command customization:

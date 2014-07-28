@@ -36,7 +36,7 @@ class MlabSimRequestTests (unittest.TestCase):
 
     @patch('mlabsim.web.MlabSimRequest._sendStatusAndJsonResponse')
     def test_sendJsonResponse(self, m_ssajr):
-        obj = {'fruit', 'banana'}
+        obj = {'fruit': 'banana'}
 
         self.req.sendJsonResponse(obj)
 
@@ -44,7 +44,7 @@ class MlabSimRequestTests (unittest.TestCase):
 
     @patch('mlabsim.web.MlabSimRequest._sendStatusAndJsonResponse')
     def test_sendJsonError(self, m_ssajr):
-        obj = {'fruit', 'banana'}
+        obj = {'fruit': 'banana'}
 
         self.req.sendJsonError(obj)
 

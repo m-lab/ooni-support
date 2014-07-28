@@ -89,6 +89,11 @@ MLABSIM_SOURCE=$SOURCE_DIR/mlab-ns-simulator
 $BUILD_DIR/bin/pip install --requirement $MLABSIM_SOURCE/requirements.txt --use-mirrors || exit 1
 $BUILD_DIR/bin/pip install $MLABSIM_SOURCE
 
+# install bouncer-plumbing and its dependencies:
+PLUMBING_SOURCE=$SOURCE_DIR/bouncer-plumbing
+#$BUILD_DIR/bin/pip install --requirement $PLUMBING_SOURCE/requirements.txt --use-mirrors || exit 1
+$BUILD_DIR/bin/pip install $PLUMBING_SOURCE
+
 # build a static tor
 mkdir -p $BUILD_DIR/
 cd $BUILD_DIR

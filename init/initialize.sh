@@ -148,9 +148,9 @@ helpers:
 
 sudo chown $SLICENAME:slices $SLICEHOME/oonib.conf
 
-if [ `fqdn` = "$BOUNCER_HOST" ]; then
+if [ `hostname` = "$BOUNCER_HOST" ]; then
     # NOTE: This does not actually enable the bouncer itself.  Do that
     # manually for now.
 
-    ln -s /home/mlab_ooni/bin/update-bouncer.sh /etc/cron.hourly/50_update_ooni_bouncer_from_mlab_ns.sh
+    sudo ln -s /home/mlab_ooni/bin/update-bouncer.sh /etc/cron.hourly/50_update_ooni_bouncer_from_mlab_ns.sh
 fi

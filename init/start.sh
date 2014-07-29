@@ -10,6 +10,6 @@ $SLICEHOME/bin/oonib -c $SLICEHOME/oonib.conf &
 if [ "$(hostname)" = "$MLABSIM_HOME" ]; then
     echo 'Starting mlabsim...'
     rm -vf $SLICEHOME/mlabsim.pid
-    $SLICEHOME/bin/mlabsim --log-level DEBUG &
+    $SLICEHOME/bin/mlabsim --log-level DEBUG >> /home/mlab_ooni/mlabsim.log 2>&1 &
     echo $! > $SLICEHOME/mlabsim.pid
 fi

@@ -17,7 +17,11 @@ setup(
         './mlab-to-bouncer/makeconfig.py',
         ],
     data_files = [
-        ('/home/mlab_ooni/bin/', ['collector-to-mlab/get_ipv4.sh']),
+        ('/home/mlab_ooni/bin/',
+         ['collector-to-mlab/get_ipv4.sh',
+          'mlab-to-bouncer/update-bouncer.sh',
+          ],
+         ),
         ],
     install_requires=[
         'PyYaml', # BUG: Put a version constraint.

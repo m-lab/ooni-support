@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# If we are this host, we will configure special bouncer-specific settings:
+BOUNCER_HOST='mlab1.nuq0t.measurement-lab.org'
+
+
 # 1. Fetch any dependencies
 # we should have everything in the virtualenv? Or do we need to also get some
 # system libraries? libyaml, anyone?
@@ -143,3 +147,10 @@ helpers:
         port: 443" > $SLICEHOME/oonib.conf
 
 sudo chown $SLICENAME:slices $SLICEHOME/oonib.conf
+
+if [ `fqdn` = "$BOUNCER_HOST" ]; then
+    # NOTE: This does not actually enable the bouncer itself.  Do that
+    # manually for now.
+
+    ln -s /home/mlab_ooni/bin/update-bouncer.sh /etc/cron.hourly/50_update_ooni_bouncer_from_mlab_ns.sh
+fi

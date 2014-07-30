@@ -10,8 +10,11 @@
 ENABLED=true
 
 if [ "$ENABLED" = 'true' ]; then
+    # Note: This runs from cron which has a pristine environment, so
+    # use absolute paths.
+
     # Fetch and install the latest bouncer configuration.
-    makeconfig.py
+    /home/mlab_ooni/bin/makeconfig.py
 
     # Restart the bouncer.
     sudo /home/mlab_ooni/init/stop.sh

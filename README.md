@@ -82,12 +82,27 @@ This will create the Ooni configuration. Ooni is now ready to be started.
 **Note:** You don't have to run `initialize.sh` as root, but it does use sudo
 internally, so whichever user you run it as needs to have `sudo` privileges.
 
+If the slice's hostname matches the `BOUNCER_HOST` defined in `initialize.sh`,
+then a cron job for updating the bouncer configuration from the mlab-ns
+simulator will be added to `/etc/cron.hourly`. To temporarily or permanently
+disable the cron job, edit
+`/etc/cron.hourly/50_update_ooni_bouncer_from_mlab_ns.sh` and change `ENABLED`
+to `false`.
+
+The bouncer is not automatically enabled, only the cron job to generate the
+`bouncer.yaml` configuration file is. If you want to run a bouncer, you have to
+manually edit the configuration.
+
 Starting and Stopping Ooni
 ---------------------------
 
 To start and stop the Ooni backend service, change directories into the `init`
 subdirectory of the `ooni-support` repository and run `sudo ./start.sh` and
 `sudo ./stop.sh` respectively.
+
+If the slice's hostname matches the `MLABSIM_HOME` defined in `start.sh`, then
+the mlab-ns simulator will be started when `start.sh` is run and stopped when
+`stop.sh` is run.
 
 Testing
 --------

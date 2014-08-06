@@ -10,9 +10,17 @@ def read_parts_from_mlabns():
     # Download the JSON list of slivers.
     MLAB_NS_QUERY_URL = "http://localhost:8585/ooni?match=all"
     DEVNULL = open(os.devnull, "w")
-    wget = subprocess.Popen(["wget", MLAB_NS_QUERY_URL, "-O", "-"], stdout=subprocess.PIPE, stderr=DEVNULL)
-    json_list = wget.communicate()[0]
+    wget = subprocess.Popen(["wget", MLAB_NS_QUERY_URL, "-O", "-"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    json_list, error_output = wget.communicate()
     exit_status = wget.returncode
+
+    # mlab-ns's semantics are that a 404 means there are no slices online.
+    # wget exit status 8 means "Server issued an error response":
+    # https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
+    if (exit_status == 8) and ("ERROR 404" in error_output):
+        return []
+
+    # Any other kind of error means something's wrong.
     if exit_status != 0:
         print "wget could not download the JSON list."
         exit(1)

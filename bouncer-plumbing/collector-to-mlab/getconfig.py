@@ -59,10 +59,26 @@ def get_bouncer_config_part(oonib_conf):
         # include exactly those. This is tracked in:
         # https://github.com/m-lab-tools/ooni-support/issues/55
 
-        # tcp_helpers_port = oonib_conf_parsed['helpers']['tcp-echo']['port']
-        # test_helpers['tcp-echo'] = slice_ipv4_address + ':' + str(tcp_helpers_port)
         http_return_headers_port = oonib_conf_parsed['helpers']['http-return-json-headers']['port']
-        test_helpers['http-return-json-headers'] = 'http://' + slice_ipv4_address + ':' + str(http_return_headers_port)
+        if http_return_headers_port is not None:
+            test_helpers['http-return-json-headers'] = 'http://' + slice_ipv4_address + ':' + str(http_return_headers_port)
+
+        tcp_echo_port = oonib_conf_parsed['helpers']['tcp-echo']['port']
+        if tcp_echo_port is not None:
+            test_helpers['tcp-echo'] = slice_ipv4_address + ':' + str(tcp_echo_port)
+
+        # FIXME: What about the UDP port?
+        dns_tcp_port = oonib_conf_parsed['helpers']['dns']['tcp_port']
+        if dns_tcp_port is not None:
+            test_helpers['dns'] = slice_ipv4_address + ':' + str(dns_tcp_port)
+
+        # FIXME: What about the 'address' field of the ssl helper?
+        ssl_port = oonib_conf_parsed['helpers']['ssl']['port']
+        if ssl_port is not None:
+            test_helpers['ssl'] = "https://" + slice_ipv4_address + ':' + str(ssl_port)
+
+        # FIXME: Add daphn3 test helper.
+
     except KeyError:
         return_failure("Oonib.conf is not valid or is missing information.")
 

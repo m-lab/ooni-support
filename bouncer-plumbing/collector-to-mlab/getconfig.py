@@ -84,7 +84,7 @@ def get_bouncer_config_part(oonib_conf):
 
     config_part = {
         'httpo://' + tor_onion_address: {
-            'test-helpers': test_helpers
+            'test-helper': test_helpers
         }
     }
 

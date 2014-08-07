@@ -14,7 +14,7 @@ if [ "$ENABLED" = 'true' ]; then
     # use absolute paths.
 
     # Fetch and install the latest bouncer configuration.
-    /home/mlab_ooni/bin/makeconfig.py
+    su mlab_ooni -c "/home/mlab_ooni/bin/makeconfig.py"
 
     # Restart the bouncer.
     sudo /home/mlab_ooni/init/stop.sh

@@ -36,6 +36,17 @@ def get_bouncer_config_part(oonib_conf):
     except KeyError:
         return_failure("Oonib.conf is not valid or is missing information.")
 
+    try:
+        policy_file_path = oonib_conf_parsed['main']['policy_file']
+        if not policy_file_path:
+            raise IOError
+        f = open(oonib_conf_parsed['main']['policy_file'], "r")
+        policy_file_contents = f.read()
+        f.close()
+        policy = yaml.safe_load(policy_file_contents)
+    except IOError:
+        policy = None
+
     # Find this slice's IP address.
     slice_ipv4_address = get_ipv4_address()
 
@@ -76,7 +87,8 @@ def get_bouncer_config_part(oonib_conf):
 
     config_part = {
         'httpo://' + tor_onion_address: {
-            'test-helper': test_helpers
+            'test-helper': test_helpers,
+            'policy': policy
         }
     }
 

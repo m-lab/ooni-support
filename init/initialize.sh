@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # If we are this host, we will configure special bouncer-specific settings:
-BOUNCER_HOST='mlab1.nuq0t.measurement-lab.org'
+# This is now disabled.
+BOUNCER_HOST='disabled'
 
 
 # 1. Fetch any dependencies
@@ -67,24 +68,12 @@ sudo chown -R $SLICENAME:slices $DATA_DIR
 
 # drop a policy.yaml in $DATA_DIR
 echo "
-input:
-- {id: 37e60e13536f6afe47a830bfb6b371b5cf65da66d7ad65137344679b24fdccd1}
-- {id: e0611ecd28bead38a7afeb4dda8ae3449d0fc2e1ba53fa7355f2799dce9af290}
 nettest:
-- {name: dns_consistency, version: 0.5}
-- {name: http_requests_test, version: 0.2.3}
-- {name: tcp_connect, version: 0.1}
-- {name: captivep, version: 0.2}
-- {name: daphne3, version: 0.1}
-- {name: dns_spoof, version: 0.2}
 - {name: http_header_field_manipulation, version: 0.1.3}
-- {name: http_host, version: 0.2.3}
-- {name: http_invalid_request_line, version: 0.1.4}
-- {name: multi_protocol_traceroute_test, version: 0.1.1}
 " > $DATA_DIR/policy.yaml
 sudo chown $SLICENAME:slices $DATA_DIR/policy.yaml
 
-BOUNCER_FILE='Null'
+BOUNCER_FILE='null'
 
 if [ `hostname` = "$BOUNCER_HOST" ]; then
     # Enable the bouncer:
@@ -117,44 +106,44 @@ main:
     logfile: '$SLICEHOME/oonib.log'
     pidfile: '$SLICEHOME/oonib.pid'
     nodaemon: false
-    originalname: Null
-    chroot: Null
+    originalname: null
+    chroot: null
     rundir: '$SLICEHOME'
-    umask: Null
-    euid: Null
+    umask: null
+    euid: null
     uid: $OONIB_UID
     gid: $OONIB_GID
     socks_port: 9055
-    uuid: Null
+    uuid: null
     no_save: true
-    profile: Null
+    profile: null
     debug: false
     stale_time: 3600
 
 helpers:
     http-return-json-headers:
-        address: Null
+        address: null
         port: $HTTP_ECHO_PORT
         server_version: Apache
 
     tcp-echo:
-        address: Null
+        address: null
         port: $TCP_ECHO_PORT
 
     daphn3:
-        yaml_file: Null
-        pcap_file: Null
-        port: Null
+        yaml_file: null
+        pcap_file: null
+        port: null
 
     dns:
-        address: Null
-        udp_port: Null
-        tcp_port: Null
+        address: null
+        udp_port: null
+        tcp_port: null
 
     ssl:
-        address: Null
-        private_key: '$SLICEHOME/private.key'
-        certificate: '$SLICEHOME/certificate.crt'
-        port: 443" > $SLICEHOME/oonib.conf
+        address: null
+        private_key: null
+        certificate: null
+        port: null" > $SLICEHOME/oonib.conf
 
 sudo chown $SLICENAME:slices $SLICEHOME/oonib.conf

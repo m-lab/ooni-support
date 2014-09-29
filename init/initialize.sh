@@ -120,6 +120,8 @@ main:
     debug: false
     stale_time: 3600
 
+    report_file_template: '{year}/{month}/{day}/{year}{month}{day}T{hour}:{minute}:{second}-{probe_cc}-{test_name}-{iso8601_timestamp}-{probe_asn}-probe.yamloo'
+
 helpers:
     http-return-json-headers:
         address: null

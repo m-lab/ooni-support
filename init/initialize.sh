@@ -12,30 +12,35 @@ source /etc/mlab/slice-functions
 
 set -e
 
-# TODO: remove this is nothing breaks. 
-#yum install -y PyYAML python-ipaddr
-
 # 2. Generate a ssl certificate
-cd $SLICEHOME
+generate_ssl_certificate() {
+  cd $SLICEHOME
 
-#XXX: we should think about setting these fields more carefully
-OPENSSL_SUBJECT="/C=US/ST=CA/CN="`hostname`
-OPENSSL_PASS=file:$SLICEHOME/cert.pass
-sudo -u $SLICENAME dd if=/dev/random of=$SLICEHOME/cert.pass bs=32 count=1
-sudo -u $SLICENAME openssl genrsa -des3 -passout $OPENSSL_PASS -out private.key 4096
-sudo -u $SLICENAME openssl req -new -passin $OPENSSL_PASS -key private.key -out server.csr -subj $OPENSSL_SUBJECT
-sudo -u $SLICENAME cp private.key private.key.org
+  #XXX: we should think about setting these fields more carefully
+  OPENSSL_SUBJECT="/C=US/ST=CA/CN="`hostname`
+  OPENSSL_PASS=file:$SLICEHOME/cert.pass
+  sudo -u $SLICENAME dd if=/dev/random of=$SLICEHOME/cert.pass bs=32 count=1
+  sudo -u $SLICENAME openssl genrsa -des3 -passout $OPENSSL_PASS -out private.key 4096
+  sudo -u $SLICENAME openssl req -new -passin $OPENSSL_PASS -key private.key -out server.csr -subj $OPENSSL_SUBJECT
+  sudo -u $SLICENAME cp private.key private.key.org
 
-# Remove passphrase from key
-sudo -u $SLICENAME openssl rsa -passin file:$SLICEHOME/cert.pass -in private.key.org -out private.key
-sudo -u $SLICENAME chmod 600 private.key
-sudo -u $SLICENAME openssl x509 -req -days 365 -in server.csr -signkey private.key -out certificate.crt
-rm private.key.org
-rm cert.pass
+  # Remove passphrase from key
+  sudo -u $SLICENAME openssl rsa -passin file:$SLICEHOME/cert.pass -in private.key.org -out private.key
+  sudo -u $SLICENAME chmod 600 private.key
+  sudo -u $SLICENAME openssl x509 -req -days 365 -in server.csr -signkey private.key -out certificate.crt
+  rm private.key.org
+  rm cert.pass
+}
+# Currently disabled as it's not a supported mlab test.
+# generate_ssl_certificate
 
 # get the UID and GID to drop privileges to
-OONIB_UID=`id -u $SLICENAME`
-OONIB_GID=`id -g $SLICENAME`
+# XXX This is currently disabled because of 
+# https://trac.torproject.org/projects/tor/ticket/13116
+# OONIB_UID=`id -u $SLICENAME`
+# OONIB_GID=`id -g $SLICENAME`
+OONIB_UID="null"
+OONIB_GID="null"
 
 # randomly select either a tcp backend helper or a http backend helper to
 # listen on port 80. Otherwise, bind to port 81
@@ -141,6 +146,12 @@ helpers:
         address: null
         udp_port: null
         tcp_port: null
+    
+    dns_discovery:
+        address: null
+        udp_port: null
+        tcp_port: null
+        resolver_address: null
 
     ssl:
         address: null

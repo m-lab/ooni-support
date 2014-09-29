@@ -71,6 +71,9 @@ sudo chown $SLICENAME:slices $REPORT_DIR
 sudo chown $SLICENAME:slices $ARCHIVE_DIR
 sudo chown -R $SLICENAME:slices $DATA_DIR
 
+# Tor will run as root for the moment
+sudo chown -R root $TOR_DIR
+
 # drop a policy.yaml in $DATA_DIR
 echo "
 nettest:

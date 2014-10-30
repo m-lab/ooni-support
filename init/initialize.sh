@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# If we are this host, we will configure special bouncer-specific settings:
+BOUNCER_HOST='mlab1.nuq0t.measurement-lab.org'
+
+
 # 1. Fetch any dependencies
 # we should have everything in the virtualenv? Or do we need to also get some
 # system libraries? libyaml, anyone?
@@ -51,13 +55,15 @@ TOR_DIR=$DATA_DIR/tor
 INPUT_DIR=$DATA_DIR/inputs
 DECK_DIR=$DATA_DIR/decks
 
-mkdir -p $REPORT_DIR
+sudo mkdir -p $REPORT_DIR
+sudo mkdir -p $ARCHIVE_DIR
 mkdir -p $TOR_DIR
 mkdir -p $INPUT_DIR
 mkdir -p $DECK_DIR
 
-chown $SLICENAME:slices $REPORT_DIR
-chown -R $SLICENAME:slices $DATA_DIR
+sudo chown $SLICENAME:slices $REPORT_DIR
+sudo chown $SLICENAME:slices $ARCHIVE_DIR
+sudo chown -R $SLICENAME:slices $DATA_DIR
 
 # drop a policy.yaml in $DATA_DIR
 echo "
@@ -76,7 +82,18 @@ nettest:
 - {name: http_invalid_request_line, version: 0.1.4}
 - {name: multi_protocol_traceroute_test, version: 0.1.1}
 " > $DATA_DIR/policy.yaml
-chown $SLICENAME:slices $DATA_DIR/policy.yaml
+sudo chown $SLICENAME:slices $DATA_DIR/policy.yaml
+
+BOUNCER_FILE='Null'
+
+if [ `hostname` = "$BOUNCER_HOST" ]; then
+    # Enable the bouncer:
+    BOUNCER_FILE="$DATA_DIR/bouncer.yaml"
+
+    # And update the bouncer config from cron on an hourly schedule:
+    sudo ln -s /home/mlab_ooni/bin/update-bouncer.sh /etc/cron.hourly/50_update_ooni_bouncer_from_mlab_ns.sh
+fi
+
 
 # drop a config in $SLICEHOME
 echo "
@@ -87,7 +104,7 @@ main:
     deck_dir: '$DECK_DIR'
 
     policy_file: '$DATA_DIR/policy.yaml'
-    bouncer_file: Null
+    bouncer_file: '$BOUNCER_FILE'
 
     tor_datadir: '$TOR_DIR'
     tor_binary: '$SLICEHOME/bin/tor'
@@ -140,4 +157,4 @@ helpers:
         certificate: '$SLICEHOME/certificate.crt'
         port: 443" > $SLICEHOME/oonib.conf
 
-chown $SLICENAME:slices $SLICEHOME/oonib.conf
+sudo chown $SLICENAME:slices $SLICEHOME/oonib.conf

@@ -42,6 +42,9 @@ generate_ssl_certificate() {
 OONIB_UID="null"
 OONIB_GID="null"
 
+# Set a sane umask
+UMASK=0022
+
 # randomly select either a tcp backend helper or a http backend helper to
 # listen on port 80. Otherwise, bind to port 81
 coin=$[$RANDOM % 2]
@@ -117,7 +120,7 @@ main:
     originalname: null
     chroot: null
     rundir: '$SLICEHOME'
-    umask: null
+    umask: $UMASK
     euid: null
     uid: $OONIB_UID
     gid: $OONIB_GID

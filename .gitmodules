@@ -1,6 +1,6 @@
 [submodule "package"]
 	path = package
-	url = https://github.com/m-lab-tools/package.git
+	url = https://github.com/m-lab/package.git
 [submodule "ooni-backend"]
 	path = ooni-backend
 	url = https://github.com/TheTorProject/ooni-backend.git
